@@ -1,0 +1,16 @@
+---
+import NavbarIcon from './NavbarIcon.astro';
+---
+
+<!-- Implement this becoming a top bar on sm viewports -->
+<div role="navigation" class="top-0 left-0 w-24 h-screen flex flex-col justify-between bg-primary text-secondary">
+    <div>
+        <NavbarIcon icon="mdi:home" href="/Prismo/" tooltip="Home"/>
+        <!-- <NavbarIcon icon="mdi:cog" href="/Prismo/settings" tooltip="Settings"/> -->
+        <NavbarIcon icon="mdi:information-outline" href="/Prismo/about" tooltip="About"/>
+    </div>
+    <div>
+        <NavbarIcon icon="mdi:exclamation" href="/Prismo/disclaimer" tooltip="Disclaimer"/>
+        <NavbarIcon icon="mdi:github" href="https://github.com/suprnova/Prismo" tooltip="Github"/>
+    </div>
+</div>

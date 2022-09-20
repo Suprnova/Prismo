@@ -1,0 +1,20 @@
+---
+import Prismo from "../layouts/Prismo.astro";
+---
+
+<Prismo title="Disclaimer">
+    <div class="flex flex-col overflow-y-auto pb-6">
+        <p>Prismo does not provided unmodified, copyrighted material from Adventure Time: Secret of the Nameless Kingdom, nor does it knowingly provide modified material to individuals without the proper license, as such actions would violate copyright law. The act of "randomizing" files should be considered fair use, as it's only possible to modify game files from users who have provided the game files or have otherwise confirmed their possession of such files. If you have any legal inquiries about this matter, please get in touch with me at <a href="mailto:nova@suprnova.dev">nova@suprnova.dev</a>.</p>
+        <p>Adventure Time and its related elements are trademarks of and © Cartoon Network. Adventure Time: Secret of the Nameless Kingdom are trademarks of and © Little Orbit, LLC, Wayforward Technologies Inc., Cartoon Network, and other affiliated parties. All third party trademarks remain the property of their respective owners, and their use does not imply affiliation with or endorsement by them.</p>
+    </div>
+</Prismo>
+
+<style>
+    p {
+        @apply p-6 text-gray-200 text-2xl;
+    }
+
+    a {
+        @apply underline;
+    }
+</style>

@@ -1,0 +1,31 @@
+---
+import { Icon } from 'astro-icon'
+
+export interface Props {
+    icon: string;
+    href: string;
+    tooltip: string;
+    size?: string;
+}
+
+const { icon, href, tooltip, size = "4rem" } = Astro.props;
+---
+<div class="sidebar-icon group">
+    <a href={href}>
+        <Icon name={icon} height={size} href={href} title={tooltip} />
+    </a>
+    <span class="sidebar-tooltip group-hover:scale-100">
+        {tooltip}
+    </span>
+    
+</div>
+
+<style>
+    .sidebar-icon {
+        @apply relative flex items-center justify-center h-16 w-16 my-4 mx-4 hover:text-hover transition-all;
+    }
+
+    .sidebar-tooltip {
+        @apply absolute w-auto p-2 m-2 min-w-max left-20 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left;
+    }
+</style>

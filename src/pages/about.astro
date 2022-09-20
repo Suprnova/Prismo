@@ -1,0 +1,39 @@
+---
+import Prismo from "../layouts/Prismo.astro";
+---
+
+<Prismo title="About">
+    <div class="flex flex-col overflow-y-auto pb-6">
+        <h1>Prismo</h1>
+        <p>Prismo is a web application designed as a GUI wrapper for the <span class="font-semibold text-secondary">Adventure Time 3: The Secret of the Nameless Kingdom</span> randomizer created by <a target="_blank" href="https://github.com/colinthomas5">actualchatterteeth</a>.</p>
+        <h2>What is this made in?</h2>
+        <p>The randomizer itself is written in Python, and the source code is available <a target="_blank" href="https://github.com/colinthomas5/AT3-Randomizer">here</a>. This web application is written in <a href="https://astro.build/">Astro</a>, <a href="https://svelte.dev/">Svelte</a>, and <a target="_blank" href="https://tailwindcss.com/">Tailwind CSS</a>, and also has its source code available <a target="_blank" href="https://github.com/suprnova/Prismo">here</a>.</p>
+        <h2>Why is my browser unsupported?</h2>
+        <p>To access the files for the game, Prismo interacts with your files through the <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_Access_API">File System Access API</a>. Most browsers support it, but some, notably Firefox, do not. If your browser is unsupported, ensure you're on the latest version of your browser, or try using Chrome, Edge, or Opera instead.</p>
+        <h2>Why are you asking if I have a legal copy?</h2>
+        <p>It's illegal to provide the game files to users who do not have the rights to access those files, and so Prismo confirms that you possess a legal copy before proceeding with the randomization.</p>
+        <h2>Are my files backed up?</h2>
+        <p>Yes. The website will create a backup of your files in the same directory as the original files, within a folder called "data_old".</p>
+        <h2>17?</h2>
+        <p>38.</p>
+        <p class="text-xs text-gray-700">ayy....</p>
+    </div>
+</Prismo>
+
+<style>
+    h1 {
+        @apply p-6 text-6xl text-secondary;
+    }
+    
+    h2 {
+        @apply p-6 text-4xl text-secondary;
+    }
+
+    p {
+        @apply px-6 text-gray-200 text-2xl;
+    }
+
+    a {
+        @apply underline;
+    }
+</style>

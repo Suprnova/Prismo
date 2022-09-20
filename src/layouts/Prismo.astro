@@ -1,0 +1,37 @@
+---
+import Navbar from '../components/Navbar.astro'
+
+export interface Props {
+  title?: string;
+}
+
+let { title } = Astro.props;
+if (title !== undefined) {
+  title = " - " + title;
+}
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Prismo{title}</title>
+    <meta name="description" content="Prismo is an Adventure Time: The Secret of the Nameless Kingdom randomizer, entirely accessible within your browser.">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <noscript>Prismo requires JavaScript to run. Please enable it in your browser settings.</noscript>
+  </head>
+  <body>
+    <div class="haumea">
+      <header>
+        <Navbar />
+      </header>
+      <main class="flex h-screen w-screen">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>
+
+<style>
+  .haumea {
+    @apply flex bg-background overflow-x-auto;
+  }
+</style>
