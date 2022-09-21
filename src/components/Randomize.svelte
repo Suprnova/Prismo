@@ -3,6 +3,9 @@
 
     let directoryPath
     let confirmRights = false
+    let backup = false
+    // change this to a cookie from settings
+    let backupDir = "data_old"
     let seed
     let itemRandomization = true
     let itemLogic = [
@@ -82,10 +85,14 @@
                 spoilerLog: (spoilerLog ? 1 : 0)
             })
         }
-        console.log(req)
 
         fetch(endpoint, req)
-            .then((res) => res.json())
+            .then((res) => {
+                if (!res.ok) {
+                    alert("There was an error attempting to randomize your files! (" + res.status + " " + res.statusText +") Please try again later, or let us know about it!")
+                    return
+                }
+            })
             .then(async (body) => {
                 for await (const entry of dir.values()) {
                     if (body[entry.name] != undefined) {
@@ -114,7 +121,7 @@
     })
 </script>
 
-<style>
+<style type="text/postcss">
 	.single-input {
 		@apply flex flex-col w-full self-center items-center mb-6;
 	}
@@ -162,6 +169,9 @@
 			</div>
 			<label class="checkbox-group py-4">
 				<input type="checkbox" bind:checked={confirmRights} id="confirmRights"><span class="ml-2 text-gray-300">I understand that I must have a legal copy of AT3 in order to use this randomizer.</span>
+			</label>
+            <label class="checkbox-group py-4">
+				<input type="checkbox" bind:checked={backup} id="backup"><span class="ml-2 text-gray-300">Backup files to {backupDir} folder</span>
 			</label>
 		</div>
 		<div class="single-input">
