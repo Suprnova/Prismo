@@ -1,11 +1,12 @@
 <script>
     import { onMount } from "svelte";
 
+    import { backupDir } from '../scripts/store.js';
+
     let directoryPath
     let confirmRights = false
     let backup = false
     // change this to a cookie from settings
-    let backupDir = "data_old"
     let seed
     let itemRandomization = true
     let itemLogic = [
@@ -29,6 +30,7 @@
     let spoilerLog = true
 
     let dir
+    let backupDirectory
     let selectedILogic = itemLogic.find(x => x.id === 1)
     let selectedIPool = itemPool.find(x => x.id === 1)
     let selectedNLogic = npcLogic.find(x => x.id === 0)
@@ -36,7 +38,7 @@
     let successfullyLoaded = false
 
     const fileList = ["overworld_forest_cave.pak", "overworld_forest_cave_2.pak", "overworld_forest_master.pak", "overworld_iceking_cave.pak", "overworld_kingdom_master.pak", "overworld_mountain_cave_1.pak", "overworld_mountain_cave_3.pak", "overworld_mountain_cave_4.pak", "overworld_mountain_master.pak", "overworld_swamp_master.pak", "overworld_wasteland_cave_1.pak", "temple_dream_master.pak", "temple_fear_master.pak", "temple_song_master.pak", "castle_nightmare_master.pak", "overworld_lsp_cave.pak", "castle_basement_master.pak"]
-    const fileContents = []
+    const fileContents = new Map()
 
     async function getFile() {
         if (typeof(window.showDirectoryPicker) === 'undefined') {
@@ -52,21 +54,42 @@
             if (fileList.includes(entry.name)) {
                 const fileHandle = await dir.getFileHandle(entry.name, { create: false })
                 const file = await fileHandle.getFile()
-                fileContents.push(file.name)
+                fileContents.set(file.name, "temp")
             }
         }
 
+        console.log(fileContents)
         // todo: implement backup
-        if (fileContents.length < 17) {
+        if (fileContents.size < 17) {
             alert("You are missing some files. Please make sure you have all the files in the folder.")
             return
         }
-        directoryPath = fileContents.length.toString() + " files successfully loaded!"
+        directoryPath = fileContents.size.toString() + " files successfully loaded!"
         successfullyLoaded = true
     }
 
     async function randomize(e) {
         e.preventDefault()
+
+        if (backup) {
+            backupDirectory = await dir.getDirectoryHandle($backupDir, { create: true });
+            for await (const entry of dir.values()) {
+                if (fileList.includes(entry.name)) {
+                    const fileHandle = await dir.getFileHandle(entry.name, { create: false })
+                    const file = await fileHandle.getFile()
+                    if (backup) {
+                        fileContents.set(file.name, await file.arrayBuffer())
+                    }
+                }
+            }
+            for (let [name, bytes] of fileContents) {
+                const backupFile = await backupDirectory.getFileHandle(name, { create: true })
+                const backupWritable = await backupFile.createWritable()
+                await backupWritable.write(bytes)
+                await backupWritable.close()
+            }
+            console.log("Backup finished!")
+        }
 
         const endpoint = import.meta.env.PUBLIC_RANDOMIZER_ENDPOINT
         const req = {
@@ -86,14 +109,17 @@
             })
         }
 
+        console.log("Sending randomization request...")
         fetch(endpoint, req)
             .then((res) => {
                 if (!res.ok) {
                     alert("There was an error attempting to randomize your files! (" + res.status + " " + res.statusText +") Please try again later, or let us know about it!")
-                    return
+                    throw Error(response.statusText);
                 }
+                return res.json()
             })
             .then(async (body) => {
+                console.log("Randomized files received!")
                 for await (const entry of dir.values()) {
                     if (body[entry.name] != undefined) {
                         const fileHandle = await dir.getFileHandle(entry.name, { create: false })
@@ -103,12 +129,15 @@
                         await writer.close()
                     }
                 }
-                dir.getFileHandle("spoilerLog.txt", { create: true })
+                if (spoilerLog) {
+                    dir.getFileHandle("spoilerLog.txt", { create: true })
                     .then(async (fileHandle) => {
                         const writer = await fileHandle.createWritable()
                         await writer.write(body["spoilerLog"])
                         await writer.close()
                     })
+                }
+                console.log("Done randomizing files!")
             });
     }
 
@@ -171,7 +200,7 @@
 				<input type="checkbox" bind:checked={confirmRights} id="confirmRights"><span class="ml-2 text-gray-300">I understand that I must have a legal copy of AT3 in order to use this randomizer.</span>
 			</label>
             <label class="checkbox-group py-4">
-				<input type="checkbox" bind:checked={backup} id="backup"><span class="ml-2 text-gray-300">Backup files to {backupDir} folder</span>
+				<input type="checkbox" bind:checked={backup} id="backup"><span class="ml-2 text-gray-300">Backup files to {$backupDir} folder</span>
 			</label>
 		</div>
 		<div class="single-input">
