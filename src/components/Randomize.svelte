@@ -124,8 +124,9 @@
                     if (body[entry.name] != undefined) {
                         const fileHandle = await dir.getFileHandle(entry.name, { create: false })
                         const writer = await fileHandle.createWritable()
-                        await writer.write(body[entry.name])
-                        console.log(body[entry.name])
+                        const contentArray = Uint8Array.from(window.atob(body[entry.name]), c => c.charCodeAt(0))
+                        const content = contentArray.buffer
+                        await writer.write(content)
                         await writer.close()
                     }
                 }

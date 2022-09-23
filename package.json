@@ -16,7 +16,6 @@
     "@astrojs/tailwind": "^1.0.0",
     "astro": "^1.2.0",
     "astro-icon": "^0.7.3",
-    "js-cookie": "^3.0.1",
     "svelte": "^3.50.1"
   },
   "devDependencies": {
