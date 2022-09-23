@@ -2,7 +2,7 @@
 
 Prismo is a web application designed to randomize game files for Adventure Time: The Secret of the Nameless Kingdom (AT3). It uses a serverless function, [Prismo-Randomizer](https://github.com/suprnova/prismo-randomizer) (adapted from [colinthomas5's AT3 Randomizer script](https://github.com/colinthomas5/AT3-Randomizer)), designed to keep the website entirely static.
 
-The webapp is publicly available on https://suprnova.github.io/prismo, where you can randomize your own files yourself. You don't have to build the application unless you want to run and develop it locally.
+The webapp is publicly available on https://prismo.at, where you can randomize your own files yourself. You don't have to build the application unless you want to run and develop it locally.
 
 # Build Instructions
 
