@@ -5,6 +5,5 @@ import tailwind from "@astrojs/tailwind";
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind(), svelte()],
-  site: 'https://suprnova.github.io',
-  base: '/Prismo'
+  site: 'https://prismo.at'
 });
