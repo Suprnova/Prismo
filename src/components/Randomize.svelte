@@ -36,6 +36,7 @@
     let selectedNLogic = npcLogic.find(x => x.id === 0)
 
     let successfullyLoaded = false
+    let currentlyRandomizing = false
 
     const fileList = ["overworld_forest_cave.pak", "overworld_forest_cave_2.pak", "overworld_forest_master.pak", "overworld_iceking_cave.pak", "overworld_kingdom_master.pak", "overworld_mountain_cave_1.pak", "overworld_mountain_cave_3.pak", "overworld_mountain_cave_4.pak", "overworld_mountain_master.pak", "overworld_swamp_master.pak", "overworld_wasteland_cave_1.pak", "temple_dream_master.pak", "temple_fear_master.pak", "temple_song_master.pak", "castle_nightmare_master.pak", "overworld_lsp_cave.pak", "castle_basement_master.pak"]
     const fileContents = new Map()
@@ -48,7 +49,6 @@
         }
         // open file picker
         dir = await window.showDirectoryPicker({ mode: 'readwrite' });
-        console.log(dir)
         directoryPath = "Loading from " + dir.name + "..."
         for await (const entry of dir.values()) {
             if (fileList.includes(entry.name)) {
@@ -58,8 +58,6 @@
             }
         }
 
-        console.log(fileContents)
-        // todo: implement backup
         if (fileContents.size < 17) {
             alert("You are missing some files. Please make sure you have all the files in the folder.")
             return
@@ -70,6 +68,7 @@
 
     async function randomize(e) {
         e.preventDefault()
+        currentlyRandomizing = true
 
         if (backup) {
             backupDirectory = await dir.getDirectoryHandle($backupDir, { create: true });
@@ -88,7 +87,6 @@
                 await backupWritable.write(bytes)
                 await backupWritable.close()
             }
-            console.log("Backup finished!")
         }
 
         const endpoint = import.meta.env.PUBLIC_RANDOMIZER_ENDPOINT
@@ -109,17 +107,16 @@
             })
         }
 
-        console.log("Sending randomization request...")
         fetch(endpoint, req)
             .then((res) => {
                 if (!res.ok) {
                     alert("There was an error attempting to randomize your files! (" + res.status + " " + res.statusText +") Please try again later, or let us know about it!")
+                    currentlyRandomizing = false
                     throw Error(response.statusText);
                 }
                 return res.json()
             })
             .then(async (body) => {
-                console.log("Randomized files received!")
                 for await (const entry of dir.values()) {
                     if (body[entry.name] != undefined) {
                         const fileHandle = await dir.getFileHandle(entry.name, { create: false })
@@ -138,7 +135,8 @@
                         await writer.close()
                     })
                 }
-                console.log("Done randomizing files!")
+                alert("Your files were successfully randomized! If you enabled the spoiler log, you can find it in the same folder as your files.")
+                currentlyRandomizing = false
             });
     }
 
@@ -261,7 +259,13 @@
 			</label>
 		</div>
 		<div class="single-input">
-			<button class="randomizeButton" disabled={!confirmRights || (!itemRandomization && !npcRandomization) || !successfullyLoaded} id="randomize" data-submit="...Sending">Randomize</button>
+			<button class="randomizeButton" disabled={!confirmRights || (!itemRandomization && !npcRandomization) || !successfullyLoaded || currentlyRandomizing} id="randomize" data-submit="...Sending">
+                {#if currentlyRandomizing}
+                Randomizing...
+                {:else}
+                Randomize!
+                {/if}
+            </button>
 		</div>
 	</form>
 </main>
