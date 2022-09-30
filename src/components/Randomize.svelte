@@ -14,9 +14,9 @@
         , { id: 1, name: "Standard" }
     ]
     let itemPool = [
-          { id: 1, name: "Standard" }
-        , { id: 2, name: "Expanded" }
-        // , { id: 3, name: "Custom" }
+          { id: 0, name: "Standard" }
+        , { id: 1, name: "Expanded" }
+        // , { id: 2, name: "Custom" }
     ]
     let npcRandomization = true
     let npcLogic = [
@@ -32,7 +32,7 @@
     let dir
     let backupDirectory
     let selectedILogic = itemLogic.find(x => x.id === 1)
-    let selectedIPool = itemPool.find(x => x.id === 1)
+    let selectedIPool = itemPool.find(x => x.id === 0)
     let selectedNLogic = npcLogic.find(x => x.id === 0)
 
     let successfullyLoaded = false
@@ -97,8 +97,8 @@
             },
             body: JSON.stringify({
                 seed: (seed === undefined) ? String(Math.floor(Math.random() * 1000000000)) : seed,
-                itemRandomization: (itemRandomization ? 1 + selectedILogic.id : 0),
-                itemPool: selectedIPool.id,
+                itemRandomization: (itemRandomization ? 1 + selectedIPool.id : 0),
+                itemLogic: selectedILogic.id,
                 npcRandomization: (npcRandomization ? 1 + selectedNLogic.id : 0),
                 lspCaveRandomization: (lspCaveRandomization ? 1 : 0),
                 nightmareCastleRandomization: (nightmareCastleRandomization ? 1 : 0),
